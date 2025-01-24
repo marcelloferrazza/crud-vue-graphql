@@ -1,7 +1,7 @@
 <template>
 
     <div>
-<MovieTable pageTitle="Todos os filmes cadastrados"></MovieTable>
+<MovieTable gender="all" pageTitle="Todos os filmes cadastrados"></MovieTable>
 
     </div>
 
@@ -16,7 +16,7 @@ export default {
 
 name:   "Movies",
 components: {
-    MovieTables
+    MovieTable
 }
 }
 

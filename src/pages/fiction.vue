@@ -1,7 +1,7 @@
 <template>
 
     <div>
-<MovieTable pageTitle="Ficção científica"></MovieTable>
+<MovieTable gender="fiction" pageTitle="Ficção científica"></MovieTable>
 
     </div>
 

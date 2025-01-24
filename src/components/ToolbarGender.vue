@@ -36,7 +36,7 @@
       return {
         types: ["Todos", "Comédia", "Ação", "Ficção", "Terror"],
         fileNames: {
-        Todos:"all",
+          Todos:"all",
           Comédia: "comedy",
           Ação: "action",
           Ficção: "fiction",
@@ -50,9 +50,7 @@
         // Se estiver usando Webpack + Vue CLI:
         const imageSrc = new URL(`../assets/genders/${fileName}.png`, import.meta.url).href;
 
-  
-        // Opcionalmente, adicione `backgroundSize` ou `backgroundPosition`
-        // conforme sua necessidade
+
         return {
           backgroundImage: `url(${imageSrc})`,
           backgroundSize: 'cover',
@@ -75,7 +73,13 @@
   .custom-toolbar {
     height: 150px !important;
     margin-bottom: 20px;
+    transition: transform 0.3s ease, height 0.3s ease;
   }
+
+  .custom-toolbar:hover {
+  height: 150px !important; 
+  transform: scale(1.05); 
+}
 
  
   </style>

@@ -40,12 +40,12 @@
                 dark
                 v-bind="props"
               >
-                Novo filme
+                Novo filme 
               </v-btn>
             </template>
             <v-card>
               <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
+                <span class="text-h5">{{ formTitle }} - {{ pageTitle }}</span>
               </v-card-title>
   
               <v-card-text>
@@ -53,34 +53,28 @@
                   <v-row>
                     <v-col
                       cols="12"
-                      md="4"
-                      sm="6"
+                      md="6"
+                      sm="10"
                     >
                       <v-text-field
                         v-model="editedItem.name"
                         label="Nome do filme"
                       ></v-text-field>
                     </v-col>
+                  
                     <v-col
                       cols="12"
-                      md="4"
-                      sm="6"
+                      md="6"
+                      sm="10"
                     >
-                      <v-text-field
+                      <v-select
+                      v-if="gender==='all'"
                         v-model="editedItem.type"
-                        label="Gênero"
-                      ></v-text-field>
+                        :items="genders"
+                        label="Selecione o gênero"
+                      ></v-select>
                     </v-col>
-                    <v-col
-                      cols="12"
-                      md="4"
-                      sm="6"
-                    >
-                      <v-text-field
-                        v-model="editedItem.id"
-                        label="id"
-                      ></v-text-field>
-                    </v-col>
+                   
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -144,12 +138,18 @@
   </template>
 
 <script>
+import { translateType } from '@/utils/translate';
   export default {
     props: {
       pageTitle: {
         type: String,
         default:''
+      },
+      gender: {
+        type: String,
+        default:''
       }
+
     },
     data: () => ({
       dialog: false,
@@ -166,10 +166,11 @@
         { title: 'Ações', key: 'actions', sortable: false },
       ],
       movies: [],
+
       editedIndex: -1,
       editedItem: {
         name: '',
-        type: '',
+        type:'',
         id: 0,
       },
       defaultItem: {
@@ -177,11 +178,25 @@
         type: '',
         id: 0,
       },
+
+    genders: [
+    'Ação',
+    'Aventura',
+    'Comédia',
+    'Drama',
+    'Terror',
+    'Ficção Científica',
+    'Romance',
+    'Thriller',
+    'Fantasia',
+    'Documentário'
+  ],
     }),
 
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'Novo filme' : 'Editar filme'
+      
       },
     },
 
@@ -202,24 +217,52 @@
 
     methods: {
       initialize () {
-
-        this.movies = [
+        const allMovies = [
           {
             name: 'Exorcista',
-            type: 'Terror',
+            type: 'horror',
             id: 1,
           },
           {
             name: 'teste',
-            type: 'comedia',
+            type: 'comedy',
             id: 2,
           },
           {
             name: 'superbad',
-            type: 'comedia',
+            type: 'comedy',
+            id: 3,
+          },
+          {
+            name: 'Velozes e furiosos',
+            type: 'action',
+            id: 3,
+          },
+          {
+            name: 'Avatar',
+            type: 'fiction',
+            id: 3,
+          },
+          {
+            name: 'Star Wars',
+            type: 'fiction',
             id: 3,
           },
         ]
+
+        
+        this.movies = allMovies.reduce((acc, movie) => {
+    if (this.gender === 'all' || this.gender === movie.type) {
+      movie.type = translateType(movie.type);
+      acc.push(movie);
+      
+    }
+    return acc;
+  }, []);
+    
+ 
+
+        
       },
 
       editItem (item) {
@@ -259,10 +302,14 @@
         if (this.editedIndex > -1) {
           Object.assign(this.movies[this.editedIndex], this.editedItem)
         } else {
+          this.editedItem.id = this.movies.length ? Math.max(...this.movies.map(m => m.id)) + 1 : 1
           this.movies.push(this.editedItem)
+          
         }
         this.close()
       },
+
+     
     },
   }
 </script>
