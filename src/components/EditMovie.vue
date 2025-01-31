@@ -1,13 +1,13 @@
-<!-- AddMovie.vue -->
+<!-- EditMovie.vue -->
 <template>
     <MovieDialog
       :dialog="dialog"
-      @update:dialog="$emit('update:dialog', $event)" 
+      @update:dialog="$emit('update:dialog', $event)"
       :gender="gender"
       :genders="genders"
       :pageTitle="pageTitle"
-      formTitle="Novo filme"
-      :movie="movieToAdd" 
+      formTitle="Editar filme"
+      :movie='movieToEdit'
       @save="onSave"
       @close="onClose"
     />
@@ -17,13 +17,12 @@
   import MovieDialog from '@/components/MovieDialog.vue'
   
   export default {
-    name: 'AddMovie',
+    name: 'EditMovie',
     components: { MovieDialog },
   
     emits: ['update:dialog', 'save', 'close'],
   
     props: {
-      // Controla se o diálogo tá aberto ou não
       dialog: {
         type: Boolean,
         default: false
@@ -44,8 +43,8 @@
         type: String,
         default: ''
       },
-      // Objeto de filme a ser criado (pode ser vazio)
-      movieToAdd: {
+      
+      movieToEdit: {
         type: Object,
         default: () => ({
           name: '',
@@ -56,12 +55,11 @@
     },
   
     methods: {
-      onSave(newMovie) {
-        // Dispara o evento "save" para o pai com o filme criado
-        this.$emit('save', newMovie)
+      onSave(updatedMovie) {
+        // Emite para o pai
+        this.$emit('save', updatedMovie)
       },
       onClose() {
-        // Dispara o evento "close" para o pai
         this.$emit('close')
       }
     }

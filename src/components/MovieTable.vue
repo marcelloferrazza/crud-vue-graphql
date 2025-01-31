@@ -11,8 +11,6 @@
         Voltar
       </v-btn>
         
-      
-
     <v-data-table
       :headers="headers"
       :items="movies"
@@ -30,75 +28,15 @@
             vertical
           ></v-divider>
           <v-spacer></v-spacer>
-          <v-dialog
-            v-model="dialog"
-            max-width="500px"
-          >
-            <template v-slot:activator="{ props }">
-              <v-btn
-                class="mb-2"
-                color="primary"
-                dark
-                v-bind="props"
-              >
-                Novo filme 
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }} - {{ pageTitle }}</span>
-              </v-card-title>
-  
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      md="6"
-                      sm="10"
-                    >
-                      <v-text-field
-                        v-model="editedItem.name"
-                        label="Nome do filme"
-                      ></v-text-field>
-                    </v-col>
-                  
-                    <v-col
-                      cols="12"
-                      md="6"
-                      sm="10"
-                    >
-                      <v-select
-                      v-if="gender==='all'"
-                        v-model="editedItem.type"
-                        :items="genders"
-                        label="Selecione o gênero"
-                      ></v-select>
-                    </v-col>
-                   
-                  </v-row>
-                </v-container>
-              </v-card-text>
-  
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="blue-darken-1"
-                  variant="text"
-                  @click="close"
-                >
-                  Cancel
-                </v-btn>
-                <v-btn
-                  color="blue-darken-1"
-                  variant="text"
-                  @click="save"
-                >
-                  Save
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+          <v-btn
+          class="mb-2"
+          color="primary"
+          dark
+          @click="openAdd"
+        >
+          Novo filme
+        </v-btn>
+         
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
               <v-card-title class="text-h5">Tem certeza que deseja deletar esse item?</v-card-title>
@@ -116,7 +54,7 @@
         <v-icon
           class="me-2"
           size="small"
-          @click="editItem(item)"
+          @click="openEdit(item)"
         >
           mdi-pencil
         </v-icon>
@@ -136,15 +74,24 @@
         </v-btn>
       </template>
     </v-data-table>
+    <AddMovie :dialog="dialogAdd" @update:dialog="dialogAdd = $event" :pageTitle="pageTitle" :gender="gender" :genders="genders" :movie-to-add="newMovie" @save="saveAdd" @close="closeAdd" />
+  <EditMovie  :dialog="dialogEdit"  @update:dialog="dialogEdit = $event"  :pageTitle="pageTitle"  :gender="gender" :genders="genders" :movie-to-edit="editedItem" @save="save" @close="closeEdit"/>
+
   </template>
 
 <script>
-
 import GET_MOVIES from '@/graphql/queries/getMovies';
 import GET_MOVIES_BY_GENDER from '@/graphql/queries/getMoviesByGender';
 import { useGenderStore } from '@/store/genderStore';
+import AddMovie from './AddMovie.vue';
+import EditMovie from './EditMovie.vue';
 
   export default {
+
+components: { 
+  AddMovie,
+  EditMovie
+},
     props: {
       pageTitle: {
         type: String,
@@ -156,10 +103,12 @@ import { useGenderStore } from '@/store/genderStore';
       }
 
     },
+
     data: () => ({
       genderId: '',
-      dialog: false,
+      dialogAdd: false,
       dialogDelete: false,
+      dialogEdit: false,
       headers: [
         {
           title: 'Nome do filme',
@@ -185,38 +134,25 @@ import { useGenderStore } from '@/store/genderStore';
         id: 0,
       },
 
+      newMovie: {
+        name: '',
+        type: '',
+        id: 0
+      },
+
       error: null,
       loading: false,
 
-    genders: [
-    'Ação',
-    'Aventura',
-    'Comédia',
-    'Drama',
-    'Terror',
-    'Ficção Científica',
-    'Romance',
-    'Thriller',
-    'Fantasia',
-    'Documentário'
-  ],
-    }),
+    genders: ['Ação','Aventura','Comédia','Drama','Terror','Ficção Científica','Romance','Thriller','Fantasia','Documentário'],
+  }),
 
     computed: {
-      formTitle () {
-        return this.editedIndex === -1 ? 'Novo filme' : 'Editar filme'
-      
-      },
-
       genderStore() { 
         return useGenderStore()
       }
     },
 
     watch: {
-      dialog (val) {
-        val || this.close()
-      },
       dialogDelete (val) {
         val || this.closeDelete()
       },
@@ -228,7 +164,7 @@ import { useGenderStore } from '@/store/genderStore';
     }
     },
 
-    apollo: {
+  apollo: {
   movies: {
     query() {
       return this.genderId == 1 ? GET_MOVIES : GET_MOVIES_BY_GENDER
@@ -255,22 +191,38 @@ import { useGenderStore } from '@/store/genderStore';
   },
 },
 
-
-   mounted() { 
-    this.inicialize()
-   },
-
     methods: {
+      openAdd() {
+   
+      this.newMovie = { ...this.defaultItem };
+      this.dialogAdd = true;
+    },
 
-      inicialize() {       
-       console.log(this.movies)
-      },
+    saveAdd(newMovieData) {
+      newMovieData.id = this.movies.length
+        ? Math.max(...this.movies.map(m => m.id)) + 1
+        : 1;
+      this.movies.push(newMovieData);
+    },
 
-      editItem (item) {
-        this.editedIndex = this.movies.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
-      },
+    closeAdd() {
+      console.log('Fechou diálogo de adicionar');
+    },
+
+    saveEdit(updatedMovie) {
+      Object.assign(this.movies[this.editedIndex], updatedMovie);
+    },
+    // Evento "close" vindo do <EditMovie>
+    closeEdit() {
+      console.log('Fechou diálogo de edição');
+    },
+
+    openEdit(item) {
+      this.editedIndex = this.movies.indexOf(item);
+      this.editedItem = { ...item };
+      console.log(this.editedItem)
+      this.dialogEdit = true;
+    },
 
       deleteItem (item) {
         this.editedIndex = this.movies.indexOf(item)

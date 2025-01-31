@@ -11,9 +11,12 @@
       <v-toolbar-title></v-toolbar-title>
       <v-spacer>
         <v-btn 
+          class="toolbar-button"
+          density="default"
           size="x-large"  
-          variant="tonal" 
-          :ripple="false" 
+          elevation="2"
+          variant="flat" 
+          :ripple="true" 
           color="info" 
           rounded 
           @click="openGender(type)"
@@ -104,6 +107,10 @@ export default {
 
 .custom-toolbar:hover {
   height: 150px !important; 
+  transform: scale(1.05); 
+}
+
+.toolbar-button:hover { 
   transform: scale(1.05); 
 }
 </style>
