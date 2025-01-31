@@ -15,14 +15,14 @@ export default defineConfig({
     VueRouter(),
     Vue({
       template: { transformAssetUrls }
-    }),
-    // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
+    }),    
     Vuetify({
       autoImport: true,
       styles: {
         configFile: 'src/styles/settings.scss',
       },
     }),
+  
     Components(),
     ViteFonts({
       google: {
@@ -37,6 +37,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
+      
     },
     extensions: [
       '.js',

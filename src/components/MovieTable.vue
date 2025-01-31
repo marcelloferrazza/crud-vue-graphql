@@ -16,6 +16,7 @@
     <v-data-table
       :headers="headers"
       :items="movies"
+      :loading="loading"
       :sort-by="[{ key: '', order: 'asc' }]"
     >
       <template v-slot:top>
@@ -129,7 +130,7 @@
       <template v-slot:no-data>
         <v-btn
           color="primary"
-          @click="initialize"
+          @click="inicialize"
         >
           Reset
         </v-btn>
@@ -138,7 +139,11 @@
   </template>
 
 <script>
-import { translateType } from '@/utils/translate';
+
+import GET_MOVIES from '@/graphql/queries/getMovies';
+import GET_MOVIES_BY_GENDER from '@/graphql/queries/getMoviesByGender';
+import { useGenderStore } from '@/store/genderStore';
+
   export default {
     props: {
       pageTitle: {
@@ -152,6 +157,7 @@ import { translateType } from '@/utils/translate';
 
     },
     data: () => ({
+      genderId: '',
       dialog: false,
       dialogDelete: false,
       headers: [
@@ -161,7 +167,7 @@ import { translateType } from '@/utils/translate';
           sortable: false,
           key: 'name',
         },
-        { title: 'Gênero', key: 'type' },
+        { title: 'Gênero', key: 'type.nameTranslate' },
         { title: 'ID', key: 'id' },
         { title: 'Ações', key: 'actions', sortable: false },
       ],
@@ -178,6 +184,9 @@ import { translateType } from '@/utils/translate';
         type: '',
         id: 0,
       },
+
+      error: null,
+      loading: false,
 
     genders: [
     'Ação',
@@ -198,6 +207,10 @@ import { translateType } from '@/utils/translate';
         return this.editedIndex === -1 ? 'Novo filme' : 'Editar filme'
       
       },
+
+      genderStore() { 
+        return useGenderStore()
+      }
     },
 
     watch: {
@@ -207,62 +220,50 @@ import { translateType } from '@/utils/translate';
       dialogDelete (val) {
         val || this.closeDelete()
       },
+      'genderStore.currentGenderId': {
+      immediate: true,        
+      handler(newVal) {
+        this.genderId = newVal   
+      }
+    }
     },
 
-    created () {
-      this.initialize()
-
-
+    apollo: {
+  movies: {
+    query() {
+      return this.genderId == 1 ? GET_MOVIES : GET_MOVIES_BY_GENDER
     },
+    variables() {
+      if (this.genderId == 1) {
+        return {}  
+      } else {
+        return { "genderId": this.genderId }
+      }
+    },
+    loadingKey: 'loading',
+    error(error) {
+      console.error('Erro na requisição:', error)
+      this.error = error
+    },
+    update(data) {
+      if (this.genderId == 1) {
+        return data.allMovies
+      } else {
+        return data.moviesByGender
+      }
+    },
+  },
+},
+
+
+   mounted() { 
+    this.inicialize()
+   },
 
     methods: {
-      initialize () {
-        const allMovies = [
-          {
-            name: 'Exorcista',
-            type: 'horror',
-            id: 1,
-          },
-          {
-            name: 'teste',
-            type: 'comedy',
-            id: 2,
-          },
-          {
-            name: 'superbad',
-            type: 'comedy',
-            id: 3,
-          },
-          {
-            name: 'Velozes e furiosos',
-            type: 'action',
-            id: 3,
-          },
-          {
-            name: 'Avatar',
-            type: 'fiction',
-            id: 3,
-          },
-          {
-            name: 'Star Wars',
-            type: 'fiction',
-            id: 3,
-          },
-        ]
 
-        
-        this.movies = allMovies.reduce((acc, movie) => {
-    if (this.gender === 'all' || this.gender === movie.type) {
-      movie.type = translateType(movie.type);
-      acc.push(movie);
-      
-    }
-    return acc;
-  }, []);
-    
- 
-
-        
+      inicialize() {       
+       console.log(this.movies)
       },
 
       editItem (item) {
