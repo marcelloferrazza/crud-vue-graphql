@@ -33,10 +33,7 @@
       },
       genders: {
         type: Array,
-        default: () => ([
-          'Ação', 'Aventura', 'Comédia', 'Drama', 'Terror',
-          'Ficção Científica', 'Romance', 'Thriller',
-          'Fantasia', 'Documentário'
+        default: () => ([     
         ])
       },
       pageTitle: {
@@ -56,7 +53,6 @@
   
     methods: {
       onSave(updatedMovie) {
-        // Emite para o pai
         this.$emit('save', updatedMovie)
       },
       onClose() {
