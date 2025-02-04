@@ -5,7 +5,7 @@
   >
     <v-card>
       <v-card-title>
-        <span class="text-h5">{{ formTitle }} - {{ translateGender }}</span>
+        <span class="text-h5">{{ formTitle }}: {{ translateGender }}</span>
       </v-card-title>
 
       <v-card-text>
@@ -22,9 +22,12 @@
             <v-col cols="12" md="6" sm="10">
               <v-select
                 v-if="gender === 'all'"
-                v-model="localMovie.type.nameTranslate"
+                v-model="localMovie.type"
                 :items="genders"
+                item-value="id"
+                item-title="nameTranslate"
                 :label="selectLabel"
+
               ></v-select>
           
               
@@ -56,8 +59,8 @@
 </template>
 
 <script>
-import { translateType } from "@/utils/translate";
 import { useGenderStore } from "@/store/genderStore";
+import { translateType } from "@/utils/translate";
 export default {
   name: 'MovieDialogForm',
   emits: ['update:dialog', 'save', 'close'],
@@ -133,12 +136,15 @@ export default {
       },
       deep: true,
     },
+
+    
   },
 
-  mounted(){
-        this.translate();
+  created() { 
+    this.translate();
 
-    },
+  },
+
 
   methods: {
     close() {
@@ -148,14 +154,15 @@ export default {
     save() {
         this.$emit('save', this.localMovie);
       this.internalDialog = false;
-    
-      
-      
-    },
-    translate(){ 
          
-         this.translateGender = translateType(this.gender);
-       }
-  },
+    },
+
+    translate () { 
+      this.translateGender = translateType(this.gender)
+    }
+    
+
+      
+  }
 }
 </script>

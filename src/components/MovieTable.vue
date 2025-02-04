@@ -83,7 +83,8 @@
 import GET_MOVIES from '@/graphql/queries/getMovies';
 import GET_MOVIES_BY_GENDER from '@/graphql/queries/getMoviesByGender';
 import SAVE_MOVIE_MUTATION from '@/graphql/mutations/saveMovie';
-import DELETE_MOVIE_MUTATION from '@/graphql/mutations/delMovie'
+import DELETE_MOVIE_MUTATION from '@/graphql/mutations/delMovie';
+import UPDATE_MOVIE_MUTATION from '@/graphql/mutations/updateMovie';
 import { useGenderStore } from '@/store/genderStore';
 import AddMovie from './AddMovie.vue';
 import EditMovie from './EditMovie.vue';
@@ -184,15 +185,23 @@ components: {
       this.error = error
     },
     update(data) {
+
       if (this.genderId == 1) {
         return data.allMovies
       } else {
         return data.moviesByGender
       }
+      
+     
     },
+
 
   },
   
+},
+
+mounted() { 
+  this.setGenderList()
 },
 
     methods: {
@@ -203,25 +212,22 @@ components: {
     },
 
     async saveAdd(newMovie) {
-         
-          try { 
-            const response = await this.$apollo.mutate({ 
-              mutation: SAVE_MOVIE_MUTATION,
-              variables: { 
-                
-  "movie": {
-    "name": newMovie.name,
-    "type": this.genderId
-  }
+  try {
+    const movieInput = {
+      name: newMovie.name,
+      type: this.genderId == 1 ? newMovie.type : this.genderId
+    };
 
-              }
-            })
-            await this.$apollo.queries.movies.refetch();
-          } catch(error) {
-            console.log("Erro ao adicionar filme:", error)
-          }
-              
-    },
+    const response = await this.$apollo.mutate({
+      mutation: SAVE_MOVIE_MUTATION,
+      variables: { movie: movieInput }
+    });
+    await this.$apollo.queries.movies.refetch();
+  } catch (error) {
+    console.log("Erro ao adicionar filme:", error);
+  }
+},
+
 
     closeAdd() {
       console.log('Fechou diálogo de adicionar');
@@ -278,16 +284,31 @@ components: {
         })
       },
 
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.movies[this.editedIndex], this.editedItem)
-        } else {
-          this.editedItem.id = this.movies.length ? Math.max(...this.movies.map(m => m.id)) + 1 : 1
-          this.movies.push(this.editedItem)
-          
-        }
-        this.close()
-      },
+     async save (newMovie)  {
+     try {
+
+      const movieInput = {
+      id: newMovie.id,  
+      name: newMovie.name,
+      type: this.genderId == 1 ? newMovie.type : newMovie.type.id
+    };
+    const response = await this.$apollo.mutate({
+      mutation: UPDATE_MOVIE_MUTATION,
+      variables:{ movie: movieInput }
+    });
+    console.log("newMovie", newMovie.type, newMovie.name, newMovie.id)
+    await this.$apollo.queries.movies.refetch();
+  } catch (error) {
+    console.log("Erro ao adicionar filme:", error);
+  }
+},
+
+      setGenderList() { 
+        const genderStore = useGenderStore();
+        this.genders = genderStore.allGenders;
+        console.log("genders", this.genders)
+        
+      }
 
      
     },
@@ -297,3 +318,7 @@ components: {
 <style>
 
 </style>
+
+
+
+
