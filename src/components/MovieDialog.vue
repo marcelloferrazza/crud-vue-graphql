@@ -11,13 +11,14 @@
       <v-card-text>
         <v-container>
           <v-row>
+          
             <v-col cols="12" md="6" sm="10">
-              <v-text-field
+                <v-text-field
                 v-model="localMovie.name"
                 :label="fieldNameLabel"
+      
               ></v-text-field>
             </v-col>
-
             <v-col cols="12" md="6" sm="10">
               <v-select
                 v-if="gender === 'all'"
@@ -25,6 +26,8 @@
                 :items="genders"
                 :label="selectLabel"
               ></v-select>
+          
+              
             </v-col>
           </v-row>
         </v-container>
@@ -43,6 +46,7 @@
           color="blue-darken-1"
           variant="text"
           @click="save"
+          :disabled="!localMovie.name"
         >
           Save
         </v-btn>
@@ -53,6 +57,7 @@
 
 <script>
 import { translateType } from "@/utils/translate";
+import { useGenderStore } from "@/store/genderStore";
 export default {
   name: 'MovieDialogForm',
   emits: ['update:dialog', 'save', 'close'],
@@ -82,16 +87,6 @@ export default {
     genders: {
       type: Array,
       default: () => [
-        'Ação',
-        'Aventura',
-        'Comédia',
-        'Drama',
-        'Terror',
-        'Ficção Científica',
-        'Romance',
-        'Thriller',
-        'Fantasia',
-        'Documentário'
       ]
     },
 
@@ -142,6 +137,7 @@ export default {
 
   mounted(){
         this.translate();
+
     },
 
   methods: {
@@ -150,8 +146,11 @@ export default {
       this.$emit('close');
     },
     save() {
-      this.$emit('save', this.localMovie);
+        this.$emit('save', this.localMovie);
       this.internalDialog = false;
+    
+      
+      
     },
     translate(){ 
          

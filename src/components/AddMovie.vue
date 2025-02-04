@@ -23,7 +23,7 @@
     emits: ['update:dialog', 'save', 'close'],
   
     props: {
-      // Controla se o diálogo tá aberto ou não
+      
       dialog: {
         type: Boolean,
         default: false
@@ -35,9 +35,7 @@
       genders: {
         type: Array,
         default: () => ([
-          'Ação', 'Aventura', 'Comédia', 'Drama', 'Terror',
-          'Ficção Científica', 'Romance', 'Thriller',
-          'Fantasia', 'Documentário'
+          
         ])
       },
       pageTitle: {
@@ -59,6 +57,8 @@
       onSave(newMovie) {
         // Dispara o evento "save" para o pai com o filme criado
         this.$emit('save', newMovie)
+        console.log("newMovie", newMovie);
+
       },
       onClose() {
         // Dispara o evento "close" para o pai

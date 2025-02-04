@@ -173,6 +173,10 @@
     "@babel/helper-string-parser" "^7.25.9"
     "@babel/helper-validator-identifier" "^7.25.9"
 
+"@biomejs/monorepo@github:biomejs/biome":
+  version "0.0.0"
+  resolved "git+ssh://git@github.com/biomejs/biome.git#be56c2e977a91d36ecadcca73c158747169bdd90"
+
 "@bufbuild/protobuf@^2.0.0":
   version "2.2.3"
   resolved "https://registry.npmjs.org/@bufbuild/protobuf/-/protobuf-2.2.3.tgz"

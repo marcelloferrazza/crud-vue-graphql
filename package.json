@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.12.8",
+    "@biomejs/monorepo": "github:biomejs/biome",
     "@mdi/font": "7.4.47",
     "@vue/apollo-composable": "^4.2.1",
     "@vue/apollo-option": "^4.2.0",

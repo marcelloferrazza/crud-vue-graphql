@@ -82,6 +82,8 @@
 <script>
 import GET_MOVIES from '@/graphql/queries/getMovies';
 import GET_MOVIES_BY_GENDER from '@/graphql/queries/getMoviesByGender';
+import SAVE_MOVIE_MUTATION from '@/graphql/mutations/saveMovie';
+import DELETE_MOVIE_MUTATION from '@/graphql/mutations/delMovie'
 import { useGenderStore } from '@/store/genderStore';
 import AddMovie from './AddMovie.vue';
 import EditMovie from './EditMovie.vue';
@@ -143,7 +145,7 @@ components: {
       error: null,
       loading: false,
 
-    genders: ['Ação','Aventura','Comédia','Drama','Terror','Ficção Científica','Romance','Thriller','Fantasia','Documentário'],
+    genders: [],
   }),
 
     computed: {
@@ -156,7 +158,7 @@ components: {
       dialogDelete (val) {
         val || this.closeDelete()
       },
-      'genderStore.currentGenderId': {
+      'genderStore.currentGender.id': {
       immediate: true,        
       handler(newVal) {
         this.genderId = newVal   
@@ -188,7 +190,9 @@ components: {
         return data.moviesByGender
       }
     },
+
   },
+  
 },
 
     methods: {
@@ -198,11 +202,25 @@ components: {
       this.dialogAdd = true;
     },
 
-    saveAdd(newMovieData) {
-      newMovieData.id = this.movies.length
-        ? Math.max(...this.movies.map(m => m.id)) + 1
-        : 1;
-      this.movies.push(newMovieData);
+    async saveAdd(newMovie) {
+         
+          try { 
+            const response = await this.$apollo.mutate({ 
+              mutation: SAVE_MOVIE_MUTATION,
+              variables: { 
+                
+  "movie": {
+    "name": newMovie.name,
+    "type": this.genderId
+  }
+
+              }
+            })
+            await this.$apollo.queries.movies.refetch();
+          } catch(error) {
+            console.log("Erro ao adicionar filme:", error)
+          }
+              
     },
 
     closeAdd() {
@@ -220,19 +238,28 @@ components: {
     openEdit(item) {
       this.editedIndex = this.movies.indexOf(item);
       this.editedItem = { ...item };
-      console.log(this.editedItem)
       this.dialogEdit = true;
     },
 
       deleteItem (item) {
-        this.editedIndex = this.movies.indexOf(item)
+        this.editedIndex = this.movies.indexOf(item);
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
       },
 
-      deleteItemConfirm () {
-        this.movies.splice(this.editedIndex, 1)
-        this.closeDelete()
+     async deleteItemConfirm (editedItem) {         
+          try { 
+            const response = await this.$apollo.mutate ({ 
+              mutation: DELETE_MOVIE_MUTATION,
+              variables: {
+    "delMovieId":this.editedItem.id
+}
+            })
+            this.closeDelete();
+            await this.$apollo.queries.movies.refetch();
+          } catch (error) { 
+            console.log("Erro ao deletar:", error);
+          }
       },
 
       close () {

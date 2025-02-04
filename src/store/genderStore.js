@@ -2,19 +2,24 @@ import { defineStore } from 'pinia'
 
 export const useGenderStore = defineStore('gender', {
   state: () => ({
-    currentGenderId: ''     
+    currentGender: {
+      id: '',
+      name: '',
+      nameTranslate: '',
+    }
   }),
 
   persist: true,
 
   getters: {
-    hasGender: (state) => !!state.currentGenderId,
+    hasGender: (state) => !!state.currentGender.id,
   },
 
   actions: {
-    setGenderId(id) {
-      console.log(id)
-      this.currentGenderId = id
+    setGender(gender) {
+      console.log(gender)
+      this.currentGender = gender;
+      console.log(this.currentGender)
     },
   },
 })

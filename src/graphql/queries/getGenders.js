@@ -3,9 +3,9 @@ import { gql } from "@apollo/client/core";
 const GET_GENDERS = gql`
   query GetGenders {
     genders {
-    id
-    name
-    nameTranslate
+      id
+      name
+      nameTranslate
     }
   }
 `;

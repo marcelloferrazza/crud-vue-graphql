@@ -10,17 +10,17 @@
     >
       <v-toolbar-title></v-toolbar-title>
       <v-spacer>
-        <v-btn 
+        <v-btn
           class="toolbar-button"
           density="default"
-          size="x-large"  
+          size="x-large"
           elevation="2"
-          variant="flat" 
-          :ripple="true" 
-          color="info" 
-          rounded 
+          variant="flat"
+          :ripple="true"
+          color="info"
+          rounded
           @click="openGender(type)"
-        >   
+        >
           {{ type.nameTranslate }}
         </v-btn>
       </v-spacer>
@@ -32,22 +32,24 @@
 </template>
 
 <script>
-import GET_GENDERS from '@/graphql/queries/getGenders';
-import { useGenderStore } from '@/store/genderStore';
+import GET_GENDERS from "@/graphql/queries/getGenders";
+import { useGenderStore } from "@/store/genderStore";
 export default {
-
   data() {
     return {
-      types: [], 
-      loading:false,
-      error:null, 
+      types: [],
+      loading: false,
+      error: null,
     };
   },
   methods: {
     toolbarBackground(type) {
-      const fileName = type.name
+      const fileName = type.name;
       try {
-        const imageSrc = new URL(`../assets/genders/${fileName}.png`, import.meta.url).href;
+        const imageSrc = new URL(
+          `../assets/genders/${fileName}.png`,
+          import.meta.url
+        ).href;
         return {
           backgroundImage: `url(${imageSrc})`,
           backgroundSize: "cover",
@@ -56,48 +58,45 @@ export default {
         };
       } catch (error) {
         console.error("Erro ao carregar imagem para:", type, error);
-        return {}; 
+        return {};
       }
     },
 
     openGender(type) {
       const genderStore = useGenderStore();
-      genderStore.setGenderId(type.id);
-      console.log(type.id)
-      this.$router.push({ path: `/${type.name}` 
-      }); 
-    }
+      genderStore.setGender(type);
+      this.$router.push({ path: `/${type.name}` });
+    },
   },
 
-  apollo: { 
-      types: { 
-        query: GET_GENDERS,
-        loadingKey:'loading',
-        error(error) {
-          console.log('Erro na requisição:', error)
-          this.error = error;
-        },
-        update(data) {
-        
-  this.types = data.genders;
-  return this.types;
-  
-}       
-      },  
-         
+  apollo: {
+    types: {
+      query: GET_GENDERS,
+      loadingKey: "loading",
+      error(error) {
+        console.log("Erro na requisição:", error);
+        this.error = error;
+      },
+      update(data) {
+        this.types = data.genders;
+        const genderStore = useGenderStore();
+        genderStore.setGender(
+        this.types);
+        console.log(this.types);
+        return this.types;
+      },
     },
+  },
 };
 </script>
 
 <style>
 .custom-toolbar {
-  height: 150px !important; 
+  height: 150px !important;
   margin-bottom: 20px;
   transition: transform 0.3s ease, height 0.3s ease;
   border-radius: 8px;
 }
-
-
 
 .custon-toolbar img {
   object-fit: cover;
@@ -106,11 +105,11 @@ export default {
 }
 
 .custom-toolbar:hover {
-  height: 150px !important; 
-  transform: scale(1.05); 
+  height: 150px !important;
+  transform: scale(1.05);
 }
 
-.toolbar-button:hover { 
-  transform: scale(1.05); 
+.toolbar-button:hover {
+  transform: scale(1.05);
 }
 </style>
