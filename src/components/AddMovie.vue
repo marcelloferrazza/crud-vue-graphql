@@ -42,7 +42,7 @@
         type: String,
         default: ''
       },
-      // Objeto de filme a ser criado (pode ser vazio)
+
       movieToAdd: {
         type: Object,
         default: () => ({
@@ -55,13 +55,13 @@
   
     methods: {
       onSave(newMovie) {
-        // Dispara o evento "save" para o pai com o filme criado
+    
         this.$emit('save', newMovie)
         console.log("newMovie", newMovie);
 
       },
       onClose() {
-        // Dispara o evento "close" para o pai
+    
         this.$emit('close')
       }
     }

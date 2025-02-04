@@ -80,9 +80,9 @@ export default {
       update(data) {
         this.types = data.genders;
         const genderStore = useGenderStore();
-        genderStore.setGender(
-        this.types);
-        console.log(this.types);
+        genderStore.setGender( this.types);
+        genderStore.setAllGenders(this.types);
+        genderStore.allGenders = genderStore.allGenders.slice(1);
         return this.types;
       },
     },

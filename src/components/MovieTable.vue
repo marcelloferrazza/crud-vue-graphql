@@ -184,15 +184,23 @@ components: {
       this.error = error
     },
     update(data) {
+
       if (this.genderId == 1) {
         return data.allMovies
       } else {
         return data.moviesByGender
       }
+      
+     
     },
+
 
   },
   
+},
+
+mounted() { 
+  this.setGenderList()
 },
 
     methods: {
@@ -203,25 +211,23 @@ components: {
     },
 
     async saveAdd(newMovie) {
-         
-          try { 
-            const response = await this.$apollo.mutate({ 
-              mutation: SAVE_MOVIE_MUTATION,
-              variables: { 
-                
-  "movie": {
-    "name": newMovie.name,
-    "type": this.genderId
-  }
+  try {
+    const movieInput = {
+      name: newMovie.name,
+      type: this.genderId == 1 ? newMovie.type : this.genderId
+    };
 
-              }
-            })
-            await this.$apollo.queries.movies.refetch();
-          } catch(error) {
-            console.log("Erro ao adicionar filme:", error)
-          }
-              
-    },
+    const response = await this.$apollo.mutate({
+      mutation: SAVE_MOVIE_MUTATION,
+      variables: { movie: movieInput }
+    });
+    console.log("newMovie", newMovie.type, newMovie.name, movieInput)
+    await this.$apollo.queries.movies.refetch();
+  } catch (error) {
+    console.log("Erro ao adicionar filme:", error);
+  }
+},
+
 
     closeAdd() {
       console.log('Fechou diálogo de adicionar');
@@ -289,6 +295,13 @@ components: {
         this.close()
       },
 
+      setGenderList() { 
+        const genderStore = useGenderStore();
+        this.genders = genderStore.allGenders;
+        console.log("genders", this.genders)
+        
+      }
+
      
     },
   }
@@ -297,3 +310,7 @@ components: {
 <style>
 
 </style>
+
+
+
+
