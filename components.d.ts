@@ -7,9 +7,13 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    2: typeof import('./src/components/AddMovie copy 2.vue')['default']
     AddMovie: typeof import('./src/components/AddMovie.vue')['default']
+    'AddMovie copy': typeof import('./src/components/AddMovie copy.vue')['default']
+    'AddMovie copy 2': typeof import('./src/components/AddMovie copy 2.vue')['default']
     AppFooter: typeof import('./src/components/AppFooter.vue')['default']
     ButtonDialogMovie: typeof import('./src/components/MovieDialog.vue')['default']
+    copy: typeof import('./src/components/AddMovie copy.vue')['default']
     EditMovie: typeof import('./src/components/EditMovie.vue')['default']
     Header: typeof import('./src/components/Header.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']

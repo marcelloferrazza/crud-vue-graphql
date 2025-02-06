@@ -1,0 +1,33 @@
+.vue-notification {
+    font-size: 1.2rem !important; 
+    padding: 15px 20px !important; 
+    margin: 10px !important; 
+    max-width: 400px !important; 
+    color: #fff !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important; 
+    border-left: 5px solid transparent !important; 
+}
+
+  .vue-notification.success {
+    background-color: #28a745 !important;
+    border-left-color: #1e7e34 !important; 
+  }
+  
+  .vue-notification.error {
+    background-color: #dc3545 !important;
+    border-left-color: #a71d2a !important;
+  }
+  
+  .vue-notification.warn {
+    background-color: #ffc107 !important;
+    border-left-color: #d39e00 !important;
+    color: #343a40 !important; 
+  }
+  
+  .vue-notification.info {
+    background-color: #17a2b8 !important;
+    border-left-color: #117a8b !important;
+  }
+  
+

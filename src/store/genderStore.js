@@ -19,17 +19,13 @@ export const useGenderStore = defineStore('gender', {
 
   actions: {
     setGender(gender) {
-      console.log(gender)
       this.currentGender = gender;
-      console.log(this.currentGender)
+      console.log(this.currentGender.id)
     },
 
     setAllGenders(genders) {
       this.allGenders = genders
-      console.log("Allgenderstore:", this.allGenders)
     },
-    removeGender() {
-      this.allGenders.splice(0, 1);
-    },
+    
   },
 })

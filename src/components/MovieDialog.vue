@@ -1,8 +1,5 @@
 <template>
-  <v-dialog
-    v-model="internalDialog"
-    max-width="500px"
-  >
+  <v-dialog v-model="internalDialog" max-width="500px">
     <v-card>
       <v-card-title>
         <span class="text-h5">{{ formTitle }}: {{ translateGender }}</span>
@@ -11,12 +8,10 @@
       <v-card-text>
         <v-container>
           <v-row>
-          
             <v-col cols="12" md="6" sm="10">
-                <v-text-field
+              <v-text-field
                 v-model="localMovie.name"
                 :label="fieldNameLabel"
-      
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="6" sm="10">
@@ -27,10 +22,9 @@
                 item-value="id"
                 item-title="nameTranslate"
                 :label="selectLabel"
-
+                emit-value
+                map-options
               ></v-select>
-          
-              
             </v-col>
           </v-row>
         </v-container>
@@ -38,12 +32,8 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn
-          color="blue-darken-1"
-          variant="text"
-          @click="close"
-        >
-          Cancel
+        <v-btn color="blue-darken-1" variant="text" @click="close">
+          Cancelar
         </v-btn>
         <v-btn
           color="blue-darken-1"
@@ -51,7 +41,7 @@
           @click="save"
           :disabled="!localMovie.name"
         >
-          Save
+          Salvar
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -62,10 +52,9 @@
 import { useGenderStore } from "@/store/genderStore";
 import { translateType } from "@/utils/translate";
 export default {
-  name: 'MovieDialogForm',
-  emits: ['update:dialog', 'save', 'close'],
+  name: "MovieDialogForm",
+  emits: ["update:dialog", "save", "close"],
   props: {
-
     dialog: {
       type: Boolean,
       default: false,
@@ -73,62 +62,57 @@ export default {
 
     pageTitle: {
       type: String,
-      default: '',
+      default: "",
     },
 
     formTitle: {
       type: String,
-      default: 'Novo filme',
+      default: "Novo filme",
     },
 
-   
     gender: {
       type: String,
-      default: 'all',
+      default: "all",
     },
 
     genders: {
       type: Array,
-      default: () => [
-      ]
+      default: () => [],
     },
 
-   
     movie: {
       type: Object,
       default: () => ({
-        name: '',
-        type: '',
+        name: "",
+        type: "",
         id: 0,
-      })
+      }),
     },
 
     fieldNameLabel: {
       type: String,
-      default: 'Nome do filme',
+      default: "Nome do filme",
     },
     selectLabel: {
       type: String,
-      default: 'Selecione o gênero',
+      default: "Selecione o gênero",
     },
   },
 
   data() {
     return {
-
       localMovie: { ...this.movie },
       internalDialog: this.dialog,
-      translateGender: ''
-    }
+      translateGender: "",
+    };
   },
 
   watch: {
-
     dialog(val) {
       this.internalDialog = val;
     },
     internalDialog(val) {
-      this.$emit('update:dialog', val);
+      this.$emit("update:dialog", val);
     },
     movie: {
       handler(newVal) {
@@ -136,33 +120,26 @@ export default {
       },
       deep: true,
     },
-
-    
   },
 
-  created() { 
+  created() {
     this.translate();
-
   },
-
 
   methods: {
     close() {
-      this.internalDialog = false; 
-      this.$emit('close');
+      this.internalDialog = false;
+      this.$emit("close");
+      console.log(this.localMovie.type);
     },
     save() {
-        this.$emit('save', this.localMovie);
+      this.$emit("save", this.localMovie);
       this.internalDialog = false;
-         
     },
 
-    translate () { 
-      this.translateGender = translateType(this.gender)
-    }
-    
-
-      
-  }
-}
+    translate() {
+      this.translateGender = translateType(this.gender);
+    },
+  },
+};
 </script>

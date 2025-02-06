@@ -8,14 +8,17 @@
   <script>
   import MovieTable from "@/components/MovieTable.vue";
   import { translateType } from "@/utils/translate";
+  import { useGenderStore } from "@/store/genderStore";
+ ;
   
   export default {
-    name: "MoviesBygender",
+    name: "MoviesBygender", 
    
     watch: {
       "$route.params.gender": {
         immediate: true,
         handler(newgender) {
+          console.log("Novo genero:",newgender)
           this.gender = newgender;
         },
       },
@@ -37,6 +40,7 @@
           this.translateGender = translateType(this.gender);
         }
     }
+       
   };
   </script>
   
