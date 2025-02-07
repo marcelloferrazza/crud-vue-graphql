@@ -21,5 +21,6 @@ declare module 'vue-router/auto-routes' {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     '/[gender]': RouteRecordInfo<'/[gender]', '/:gender', { gender: ParamValue<true> }, { gender: ParamValue<false> }>,
     '/all': RouteRecordInfo<'/all', '/all', Record<never, never>, Record<never, never>>,
+    '/playgroundcomposables': RouteRecordInfo<'/playgroundcomposables', '/playgroundcomposables', Record<never, never>, Record<never, never>>,
   }
 }

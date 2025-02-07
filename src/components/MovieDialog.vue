@@ -130,7 +130,6 @@ export default {
     close() {
       this.internalDialog = false;
       this.$emit("close");
-      console.log(this.localMovie.type);
     },
     save() {
       this.$emit("save", this.localMovie);

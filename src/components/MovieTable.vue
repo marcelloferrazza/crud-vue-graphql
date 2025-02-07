@@ -80,6 +80,8 @@ import UPDATE_MOVIE_MUTATION from "@/graphql/mutations/updateMovie";
 import { useGenderStore } from "@/store/genderStore";
 import AddMovie from "./AddMovie.vue";
 import EditMovie from "./EditMovie.vue";
+
+
 export default {
   components: {
     AddMovie,
@@ -167,7 +169,6 @@ export default {
     "genderStore.currentGender.id": {
       immediate: true,
       handler(newVal) {
-        
         console.log("Gênero mudou para:", newVal)
         this.genderId = newVal;
       },
