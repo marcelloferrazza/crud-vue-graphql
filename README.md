@@ -4,4 +4,4 @@ Projeto criado com o objetivo de estudar e praticar o ecossistema **Vue.js**, in
 
 Este CRUD de filmes foi desenvolvido no início da minha jornada como desenvolvedor web e serviu como base sólida para aprofundar meu conhecimento em **Vue**, **Vue Router**, **Vue Apollo**, e na construção de aplicações SPA com design responsivo.
 
-
+O back está no repositório: https://github.com/marcelloferrazza/crud-vue-graphql-back
